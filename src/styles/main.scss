@@ -111,7 +111,7 @@ body {
     border: 2px solid $border-color;
 
     &:hover {
-      background: color.adjust($color, $lightness: - $amount);
+      background: #4a90e2;
 
     }
   }
