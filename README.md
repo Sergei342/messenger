@@ -24,3 +24,6 @@ Stylelint — линтер стилей
 
 Прототипы 
 https://www.figma.com/design/wJHa8Ys5QDSZ4zfv4V9kIu/Untitled?node-id=2-2&p=f&t=kSwuwqj0mEUYKN79-0
+
+## Ссылка на деплой 
+- hilarious-zabaione-c6eb8d.netlify.app
