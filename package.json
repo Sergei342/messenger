@@ -27,6 +27,9 @@
     "typescript": "^5.3.3",
     "vite": "^5.0.8",
     "vite-plugin-handlebars": "^2.0.0"
+  },
+  "engines": {
+    "node": "22.11.0"
   }
 }
 
