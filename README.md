@@ -1,3 +1,5 @@
+## Ссылка на деплой 
+ [Open app on Netlify](https://hilarious-zabaione-c6eb8d.netlify.app)
 Чат-приложение
 Проект чат-приложения, разработанный с использованием Vite, Handlebars и TypeScript.
 Deployed Site
