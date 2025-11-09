@@ -56,3 +56,4 @@ export function parseQueryString(search) {
 
     return result;
 }
+

@@ -61,3 +61,4 @@ export class Validator {
         return namePattern.test(value);
     }
 }
+
