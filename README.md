@@ -4,7 +4,7 @@
 
 
 ## Ссылка на деплой 
- [Open app on Netlify](https://hilarious-zabaione-c6eb8d.netlify.app)
+[Open app on Netlify](https://hilarious-zabaione-c6eb8d.netlify.app)
 
 
 
