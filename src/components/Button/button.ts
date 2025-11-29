@@ -1,5 +1,5 @@
 import { Block } from '@core/Block';
-import template from './button.hbs?raw';
+import template from './button.hbs';
 
 interface ButtonProps {
   text: string;

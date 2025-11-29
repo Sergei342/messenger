@@ -1,6 +1,6 @@
 import { Block } from '@core/Block';
 import { validateField, ValidationRules } from '@utils/validation';
-import template from './input.hbs?raw';
+import template from './input.hbs';
 
 interface InputProps {
   type?: string;

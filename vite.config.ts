@@ -1,7 +1,14 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
+import { string } from 'vite-plugin-string';
 
 export default defineConfig({
+  plugins: [
+    string({
+      include: '**/*.hbs',
+      compress: false,
+    }),
+  ],
   root: resolve(__dirname, 'src'),
   build: {
     outDir: resolve(__dirname, 'dist'),

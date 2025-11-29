@@ -2,7 +2,7 @@ import { Block, BlockProps } from '@core/Block';
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
 import { ValidationRules, validateForm } from '@utils/validation';
-import template from './login.hbs?raw';
+import template from './login.hbs';
 
 interface LoginPageProps extends BlockProps {
   [key: string]: unknown;
