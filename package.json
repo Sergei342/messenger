@@ -3,6 +3,10 @@
   "version": "2.0.0",
   "description": "Chat application built with Vite, TypeScript and Handlebars",
   "type": "module",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
     "dev": "vite --port 3000",
     "start": "npm run build && npm run preview",
@@ -34,4 +38,3 @@
     "vite-plugin-handlebars": "^2.0.0"
   }
 }
-
