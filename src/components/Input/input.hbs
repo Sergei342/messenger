@@ -4,16 +4,15 @@
         {{#if required}}<span class="required">*</span>{{/if}}
     </label>
     <input
-            class="form-input"
+            class="form-input {{#if error}}form-input--error{{/if}}"
             type="{{type}}"
             id="{{name}}"
             name="{{name}}"
+            value="{{value}}"
             placeholder="{{placeholder}}"
-            {{#if value}}value="{{value}}"{{/if}}
-        {{#if required}}required{{/if}}
-    >
+            {{#if required}}required{{/if}}
+    />
     {{#if error}}
         <span class="form-error">{{error}}</span>
     {{/if}}
 </div>
-

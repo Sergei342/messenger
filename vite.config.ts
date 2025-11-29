@@ -1,12 +1,25 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
-import handlebars from 'vite-plugin-handlebars';
+// @ts-ignore
+import handlebars from "vite-plugin-handlebars";
 
 export default defineConfig({
   plugins: [
     handlebars({
       partialDirectory: resolve(__dirname, 'src/components'),
     }),
+    {
+      name: 'handlebars-loader',
+      transform(code, id) {
+        if (id.endsWith('.hbs')) {
+          return {
+            code: `export default ${JSON.stringify(code)}`,
+            map: null,
+          };
+        }
+        return null;
+      },
+    },
   ],
   root: resolve(__dirname, 'src'),
   build: {
@@ -30,5 +43,14 @@ export default defineConfig({
     port: 3000,
   },
   publicDir: resolve(__dirname, 'static'),
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src'),
+      '@components': resolve(__dirname, 'src/components'),
+      '@pages': resolve(__dirname, 'src/pages'),
+      '@utils': resolve(__dirname, 'src/utils'),
+      '@services': resolve(__dirname, 'src/services'),
+      '@core': resolve(__dirname, 'src/core'),
+    },
+  },
 });
-
