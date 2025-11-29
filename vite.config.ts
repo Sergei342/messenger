@@ -1,14 +1,28 @@
-import { defineConfig } from 'vite';
+import { defineConfig, Plugin } from 'vite';
 import { resolve } from 'path';
-import string from 'vite-plugin-string'; // ← Изменили: убрали { }
+import { readFileSync } from 'fs';
+
+// Собственный плагин для загрузки .hbs файлов как строк
+function handlebarsPlugin(): Plugin {
+  return {
+    name: 'vite-plugin-handlebars-loader',
+    transform(code, id) {
+      if (id.endsWith('.hbs')) {
+        // Читаем содержимое .hbs файла
+        const content = readFileSync(id, 'utf-8');
+        // Возвращаем как ES модуль со строкой
+        return {
+          code: `export default ${JSON.stringify(content)}`,
+          map: null,
+        };
+      }
+      return null;
+    },
+  };
+}
 
 export default defineConfig({
-  plugins: [
-    string({
-      include: '**/*.hbs',
-      compress: false,
-    }),
-  ],
+  plugins: [handlebarsPlugin()],
   root: resolve(__dirname, 'src'),
   build: {
     outDir: resolve(__dirname, 'dist'),
@@ -42,4 +56,3 @@ export default defineConfig({
     },
   },
 });
-
