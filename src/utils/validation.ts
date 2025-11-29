@@ -31,8 +31,8 @@ const VALIDATION_PATTERNS = {
 
 const VALIDATION_MESSAGES = {
   [ValidationRules.FIRST_NAME]: 'Имя должно начинаться с заглавной буквы и содержать только буквы и дефис',
-  [ValidationRules.SECOND_NAME]: 'Фамилия должна начинаться с заглавной буквы и содержать только буквы и дефис',
-  [ValidationRules.LOGIN]: 'Логин должен быть от 3 до 20 символов, содержать латиницу, может включать цифры, дефис и подчёркивание',
+  [ValidationRules.SECOND_NAME]: 'Фамилия должна начинаться с заглавной буквы',
+  [ValidationRules.LOGIN]: 'Логин должен быть от 3 до 20 символов',
   [ValidationRules.EMAIL]: 'Неверный формат email',
   [ValidationRules.PASSWORD]: 'Пароль должен быть от 8 до 40 символов, содержать заглавную букву и цифру',
   [ValidationRules.PHONE]: 'Телефон должен содержать от 10 до 15 цифр, может начинаться с +',
@@ -66,4 +66,3 @@ export function validateForm(data: Record<string, string>): { isValid: boolean; 
     errors,
   };
 }
-

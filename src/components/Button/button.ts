@@ -1,24 +1,24 @@
 import { Block } from '@core/Block';
-import template from './button.hbs';
+import template from './button.hbs?raw';
 
 interface ButtonProps {
-    text: string;
-    type?: 'button' | 'submit' | 'reset';
-    variant?: 'primary' | 'secondary';
-    onClick?: (e: MouseEvent) => void;
-    [key: string]: unknown;
+  text: string;
+  type?: 'button' | 'submit' | 'reset';
+  variant?: 'primary' | 'secondary';
+  onClick?: (e: MouseEvent) => void;
+  [key: string]: unknown;
 }
 
 export class Button extends Block<ButtonProps> {
-    constructor(props: ButtonProps) {
-        super({
-            ...props,
-            type: props.type || 'button',
-            variant: props.variant || 'primary',
-        });
-    }
+  constructor(props: ButtonProps) {
+    super({
+      ...props,
+      type: props.type || 'button',
+      variant: props.variant || 'primary',
+    });
+  }
 
-    protected render(): DocumentFragment {
-        return this.compile(template, this.props);
-    }
+  protected render(): DocumentFragment {
+    return this.compile(template, this.props);
+  }
 }

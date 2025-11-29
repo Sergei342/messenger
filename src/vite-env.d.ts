@@ -1,23 +1,30 @@
 /// <reference types="vite/client" />
 
 declare module '*.hbs' {
-    const content: string;
-    export default content;
+  const content: string;
+  export default content;
+}
+
+declare module '*.hbs?raw' {
+  const content: string;
+  export default content;
 }
 
 declare module '*.scss' {
-    const content: Record<string, string>;
-    export default content;
+  const content: Record<string, string>;
+  export default content;
 }
 
 declare module 'vite-plugin-handlebars' {
-    import { Plugin } from 'vite';
+  import type { Plugin } from 'vite';
 
-    interface HandlebarsOptions {
-        partialDirectory?: string | string[];
-        helpers?: Record<string, Function>;
-        context?: Record<string, unknown>;
-    }
+  export interface HandlebarsPluginOptions {
+    partialDirectory?: string | string[];
+    helpers?: Record<string, (...args: any[]) => any>;
+    context?: Record<string, any>;
+  }
 
-    export default function handlebars(options?: HandlebarsOptions): Plugin;
+  export default function handlebarsPlugin(
+    options?: HandlebarsPluginOptions
+  ): Plugin;
 }
