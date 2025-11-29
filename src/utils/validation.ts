@@ -66,3 +66,4 @@ export function validateForm(data: Record<string, string>): { isValid: boolean; 
     errors,
   };
 }
+
