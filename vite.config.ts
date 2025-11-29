@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
-// @ts-ignore
-import handlebars from "vite-plugin-handlebars";
+// @ts-ignore - нет официальных типов для vite-plugin-handlebars
+import handlebars from 'vite-plugin-handlebars';
 
 export default defineConfig({
   plugins: [
@@ -10,8 +10,9 @@ export default defineConfig({
     }),
     {
       name: 'handlebars-loader',
-      transform(code, id) {
+      transform(code: string, id: string) {
         if (id.endsWith('.hbs')) {
+          // Возвращаем содержимое .hbs файла как строку
           return {
             code: `export default ${JSON.stringify(code)}`,
             map: null,
@@ -52,5 +53,6 @@ export default defineConfig({
       '@services': resolve(__dirname, 'src/services'),
       '@core': resolve(__dirname, 'src/core'),
     },
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.hbs'],
   },
 });
