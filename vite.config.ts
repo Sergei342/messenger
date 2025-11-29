@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
-import { string } from 'vite-plugin-string';
+import string from 'vite-plugin-string'; // ← Изменили: убрали { }
 
 export default defineConfig({
   plugins: [
@@ -42,3 +42,4 @@ export default defineConfig({
     },
   },
 });
+
