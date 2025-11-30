@@ -1,8 +1,9 @@
-import Handlebars from 'handlebars';
+import * as Handlebars from 'handlebars';
 import { EventBus } from './EventBus';
 import { nanoid } from './utils';
 
 export interface BlockProps {
+  events?: Record<string, EventListener>;
   [key: string]: unknown;
 }
 
@@ -27,7 +28,7 @@ export abstract class Block<P extends BlockProps = BlockProps> {
   constructor(propsAndChildren: P = {} as P) {
     const eventBus = new EventBus();
 
-    const { props, children } = this._getChildrenAndProps(propsAndChildren);
+    const {props, children} = this._getChildrenAndProps(propsAndChildren);
 
     this.children = children;
     this.props = this._makePropsProxy(props);
@@ -59,8 +60,9 @@ export abstract class Block<P extends BlockProps = BlockProps> {
   private _registerEvents(eventBus: EventBus): void {
     eventBus.on(Block.EVENTS.INIT, this._init.bind(this));
     eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
-    // @ts-expect-error - props может не соответствовать
-    eventBus.on(Block.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
+    eventBus.on(Block.EVENTS.FLOW_CDU, (...args: any[]) => {
+      this._componentDidUpdate(args[0] as P, args[1] as P);
+    });
     eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
   }
 
@@ -70,7 +72,7 @@ export abstract class Block<P extends BlockProps = BlockProps> {
   }
 
   protected init(): void {
-
+    // Переопределяется в наследниках
   }
 
   private _componentDidMount(): void {
@@ -78,7 +80,7 @@ export abstract class Block<P extends BlockProps = BlockProps> {
   }
 
   protected componentDidMount(): void {
-
+    // Переопределяется в наследниках
   }
 
   public dispatchComponentDidMount(): void {
@@ -118,6 +120,7 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     const newElement = fragment.firstElementChild as HTMLElement;
 
     if (this._element && newElement) {
+      this._removeEvents();
       this._element.replaceWith(newElement);
     }
 
@@ -140,7 +143,7 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     const temp = document.createElement('template');
     temp.innerHTML = html;
 
-    Object.entries(this.children).forEach(([_, component]) => {
+    Object.entries(this.children).forEach(([, component]) => {
       const stub = temp.content.querySelector(`[data-id="${component.id}"]`);
       if (!stub) {
         return;
@@ -183,6 +186,14 @@ export abstract class Block<P extends BlockProps = BlockProps> {
 
     Object.keys(events).forEach((eventName) => {
       this._element?.addEventListener(eventName, events[eventName]);
+    });
+  }
+
+  private _removeEvents(): void {
+    const { events = {} } = this.props as { events?: Record<string, EventListener> };
+
+    Object.keys(events).forEach((eventName) => {
+      this._element?.removeEventListener(eventName, events[eventName]);
     });
   }
 

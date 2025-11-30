@@ -4,11 +4,7 @@ import { Button } from '@components/Button';
 import { ValidationRules, validateForm } from '@utils/validation';
 import template from './login.hbs';
 
-interface LoginPageProps extends BlockProps {
-  [key: string]: unknown;
-}
-
-export class LoginPage extends Block<LoginPageProps> {
+export class LoginPage extends Block<BlockProps> {
   constructor() {
     super({});
   }
@@ -63,10 +59,7 @@ export class LoginPage extends Block<LoginPageProps> {
 
     const result = validateForm(data);
 
-    if (result.isValid) {
-      console.log('Login form data:', data);
-      // TODO: Send to API
-    } else {
+    if (!result.isValid) {
       console.log('Validation errors:', result.errors);
       Object.entries(result.errors).forEach(([field, error]) => {
         const input = this.children[`${field}Input`] as Input;
@@ -74,7 +67,10 @@ export class LoginPage extends Block<LoginPageProps> {
           input.setProps({ error });
         }
       });
+      return;
     }
+
+    console.log('Login form data:', data);
   }
 
   protected render(): DocumentFragment {

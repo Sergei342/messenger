@@ -1,4 +1,5 @@
 import { LoginPage } from '@pages/LoginPage';
+import { MessengerPage } from '@pages/MessengerPage';
 import '@/styles/main.scss';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -8,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     throw new Error('Root element not found');
   }
 
-  // Определяем какую страницу загружать по пути
   const path = window.location.pathname;
 
   let page;
@@ -16,15 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (path === '/' || path === '/index.html') {
     page = new LoginPage();
   } else if (path === '/sign-up.html') {
-    // TODO: SignUpPage
     root.innerHTML = '<h1>Sign Up Page - Coming Soon</h1>';
     return;
   } else if (path === '/messenger.html') {
-    // TODO: MessengerPage
-    root.innerHTML = '<h1>Messenger Page - Coming Soon</h1>';
-    return;
+    page = new MessengerPage();
   } else if (path === '/settings.html') {
-    // TODO: SettingsPage
     root.innerHTML = '<h1>Settings Page - Coming Soon</h1>';
     return;
   } else if (path === '/404.html') {
