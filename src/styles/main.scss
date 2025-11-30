@@ -128,7 +128,7 @@ body {
 
 .auth-container {
   width: 100%;
-  max-width: 400px;
+  max-width: 600px;
   padding: 40px;
   background: $white;
   border-radius: 12px;
@@ -446,3 +446,29 @@ body {
     white-space: nowrap;
   }
 }
+
+.nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+
+  li {
+    margin-bottom: 10px;
+  }
+
+  a {
+    display: block;
+    padding: 12px 16px;
+    background: $primary-color;
+    color: $white;
+    text-decoration: none;
+    border-radius: 8px;
+    text-align: center;
+    transition: background 0.3s;
+
+    &:hover {
+      background: #333333;
+    }
+  }
+}
+
