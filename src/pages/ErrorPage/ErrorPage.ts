@@ -1,5 +1,5 @@
 import { Block, BlockProps } from '@core/Block';
-import template from './errorPage.hbs';
+import template from './error.hbs';
 
 interface ErrorPageProps extends BlockProps {
   code: string;
@@ -7,8 +7,6 @@ interface ErrorPageProps extends BlockProps {
 }
 
 export class ErrorPage extends Block<ErrorPageProps> {
-
-
   protected render(): DocumentFragment {
     return this.compile(template, this.props);
   }
