@@ -28,7 +28,7 @@ export abstract class Block<P extends BlockProps = BlockProps> {
   constructor(propsAndChildren: P = {} as P) {
     const eventBus = new EventBus();
 
-    const {props, children} = this._getChildrenAndProps(propsAndChildren);
+    const { props, children } = this._getChildrenAndProps(propsAndChildren);
 
     this.children = children;
     this.props = this._makePropsProxy(props);
