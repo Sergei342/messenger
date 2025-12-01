@@ -8,55 +8,91 @@ export enum ValidationRules {
   MESSAGE = 'message',
 }
 
-const VALIDATION_PATTERNS = {
+const VALIDATION_PATTERNS: Record<ValidationRules, RegExp> = {
   // Латиница или кириллица, первая буква заглавная, без пробелов и цифр, только дефис
   [ValidationRules.FIRST_NAME]: /^[A-ZА-ЯЁ][a-zа-яё-]*$/,
   [ValidationRules.SECOND_NAME]: /^[A-ZА-ЯЁ][a-zа-яё-]*$/,
 
-  // От 3 до 20 символов, латиница, может содержать цифры, но не состоять из них, дефис и подчёркивание
+  // 3-20 символов, латиница, может содержать цифры но не состоять из них, дефис и подчёркивание
   [ValidationRules.LOGIN]: /^(?=.*[a-zA-Z])[a-zA-Z0-9_-]{3,20}$/,
 
-  // Латиница, цифры, спецсимволы, обязательно @ и точка после @
+  // Email с @ и точкой после @
   [ValidationRules.EMAIL]: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
 
-  // От 8 до 40 символов, хотя бы одна заглавная буква и цифра
+  // 8-40 символов, минимум одна заглавная буква и одна цифра
   [ValidationRules.PASSWORD]: /^(?=.*[A-Z])(?=.*\d).{8,40}$/,
 
-  // От 10 до 15 символов, состоит из цифр, может начинаться с плюса
+  // 10-15 цифр, может начинаться с +
   [ValidationRules.PHONE]: /^\+?\d{10,15}$/,
 
   // Не пустое
   [ValidationRules.MESSAGE]: /^.+$/,
 };
 
-const VALIDATION_MESSAGES = {
-  [ValidationRules.FIRST_NAME]: 'Имя должно начинаться с заглавной буквы и содержать только буквы и дефис',
-  [ValidationRules.SECOND_NAME]: 'Фамилия должна начинаться с заглавной буквы',
-  [ValidationRules.LOGIN]: 'Логин должен быть от 3 до 20 символов',
+const VALIDATION_MESSAGES: Record<ValidationRules, string> = {
+  [ValidationRules.FIRST_NAME]:
+      'Имя должно начинаться с заглавной буквы, содержать только буквы и дефис',
+  [ValidationRules.SECOND_NAME]:
+      'Фамилия должна начинаться с заглавной буквы, содержать только буквы и дефис',
+  [ValidationRules.LOGIN]:
+      'Логин: 3-20 символов, латиница, может содержать цифры, дефис и подчёркивание',
   [ValidationRules.EMAIL]: 'Неверный формат email',
-  [ValidationRules.PASSWORD]: 'Пароль должен быть от 8 до 40 символов, содержать заглавную букву и цифру',
-  [ValidationRules.PHONE]: 'Телефон должен содержать от 10 до 15 цифр, может начинаться с +',
+  [ValidationRules.PASSWORD]:
+      'Пароль: 8-40 символов, минимум одна заглавная буква и цифра',
+  [ValidationRules.PHONE]: 'Телефон: 10-15 цифр, может начинаться с +',
   [ValidationRules.MESSAGE]: 'Сообщение не может быть пустым',
 };
 
-export function validateField(rule: ValidationRules, value: string): { isValid: boolean; error: string } {
+export interface ValidationResult {
+  isValid: boolean;
+  error?: string;
+}
+
+export function validateField(
+    rule: ValidationRules,
+    value: string,
+): ValidationResult {
+  if (!value || value.trim() === '') {
+    return {
+      isValid: false,
+      error: 'Поле обязательно для заполнения',
+    };
+  }
+
   const pattern = VALIDATION_PATTERNS[rule];
-  const isValid = pattern.test(value.trim());
+  const isValid = pattern.test(value);
 
   return {
     isValid,
-    error: isValid ? '' : VALIDATION_MESSAGES[rule],
+    error: isValid ? undefined : VALIDATION_MESSAGES[rule],
   };
 }
 
-export function validateForm(data: Record<string, string>): { isValid: boolean; errors: Record<string, string> } {
+export function validateForm(data: Record<string, string>): {
+  isValid: boolean;
+  errors: Record<string, string>;
+} {
   const errors: Record<string, string> = {};
 
+  // Маппинг имён полей на правила валидации
+  const fieldRules: Record<string, ValidationRules> = {
+    first_name: ValidationRules.FIRST_NAME,
+    second_name: ValidationRules.SECOND_NAME,
+    login: ValidationRules.LOGIN,
+    email: ValidationRules.EMAIL,
+    password: ValidationRules.PASSWORD,
+    phone: ValidationRules.PHONE,
+    message: ValidationRules.MESSAGE,
+    oldPassword: ValidationRules.PASSWORD,
+    newPassword: ValidationRules.PASSWORD,
+  };
+
   Object.entries(data).forEach(([field, value]) => {
-    if (field in ValidationRules) {
-      const result = validateField(field as ValidationRules, value);
+    const rule = fieldRules[field];
+    if (rule) {
+      const result = validateField(rule, value);
       if (!result.isValid) {
-        errors[field] = result.error;
+        errors[field] = result.error || 'Ошибка валидации';
       }
     }
   });

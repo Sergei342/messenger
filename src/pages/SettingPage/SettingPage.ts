@@ -53,7 +53,7 @@ export class SettingsPage extends Block<BlockProps> {
       name: 'phone',
       label: 'Телефон',
       type: 'tel',
-      value: '+7 (999) 123-45-67',
+      value: '+79991234567',
       required: true,
       validationRule: ValidationRules.PHONE,
     });
@@ -110,6 +110,71 @@ export class SettingsPage extends Block<BlockProps> {
     if (passwordForm) {
       passwordForm.addEventListener('submit', this.handlePasswordSubmit.bind(this));
     }
+
+    this.addBlurHandlers();
+  }
+
+  private addBlurHandlers(): void {
+    const profileFields = [
+      { name: 'first_name', child: 'firstNameInput' },
+      { name: 'second_name', child: 'secondNameInput' },
+      { name: 'login', child: 'loginInput' },
+      { name: 'email', child: 'emailInput' },
+      { name: 'phone', child: 'phoneInput' },
+    ];
+
+    profileFields.forEach(({ name, child }) => {
+      const input = this.children[child] as Input;
+      const element = input.element?.querySelector('input');
+
+      if (element) {
+        element.addEventListener('blur', () => {
+          requestAnimationFrame(() => {
+            const value = element.value;
+            const result = validateForm({ [name]: value });
+            if (result.errors[name]) {
+              input.setProps({ error: result.errors[name] });
+            }
+          });
+        });
+
+        element.addEventListener('focus', () => {
+          requestAnimationFrame(() => {
+            input.setProps({ error: '' });
+          });
+        });
+      }
+    });
+
+    // Обработчики для полей пароля
+    const passwordFields = [
+      { name: 'oldPassword', child: 'oldPasswordInput' },
+      { name: 'newPassword', child: 'newPasswordInput' },
+    ];
+
+    passwordFields.forEach(({child }) => {
+      const input = this.children[child] as Input;
+      const element = input.element?.querySelector('input');
+
+      if (element) {
+        element.addEventListener('blur', () => {
+          requestAnimationFrame(() => {
+            const value = element.value;
+            // Для паролей используем правило PASSWORD
+            const result = validateForm({ password: value });
+            if (result.errors.password) {
+              input.setProps({ error: result.errors.password });
+            }
+          });
+        });
+
+        element.addEventListener('focus', () => {
+          requestAnimationFrame(() => {
+            input.setProps({ error: '' });
+          });
+        });
+      }
+    });
   }
 
   private handleProfileSubmit(e: Event): void {
@@ -122,20 +187,28 @@ export class SettingsPage extends Block<BlockProps> {
       data[key] = value as string;
     });
 
+    // Валидация при submit
     const result = validateForm(data);
 
     if (!result.isValid) {
-      console.log('Profile validation errors:', result.errors);
+      // Форма НЕ ВАЛИДНА - показываем ошибки
+      console.error('Profile validation errors:', result.errors);
+
       Object.entries(result.errors).forEach(([field, error]) => {
         const input = this.children[`${field}Input`] as Input;
         if (input) {
           input.setProps({ error });
         }
       });
+
+      // ВАЖНО: Прерываем выполнение, не отправляем форму
       return;
     }
 
-    console.log('Profile updated:', data);
+    // Форма ВАЛИДНА - можно отправлять
+    console.log('✅ Profile updated:', data);
+    console.log('✅ Профиль валиден, данные можно отправить на сервер');
+    // TODO: Отправить на API
   }
 
   private handlePasswordSubmit(e: Event): void {
@@ -148,20 +221,36 @@ export class SettingsPage extends Block<BlockProps> {
       data[key] = value as string;
     });
 
-    const result = validateForm(data);
+    // Валидация паролей (проверяем как password)
+    const validationData = {
+      password: data.oldPassword,
+      newPassword: data.newPassword,
+    };
+
+    const result = validateForm(validationData);
 
     if (!result.isValid) {
-      console.log('Password validation errors:', result.errors);
-      Object.entries(result.errors).forEach(([field, error]) => {
-        const input = this.children[`${field}Input`] as Input;
-        if (input) {
-          input.setProps({ error });
-        }
-      });
+      // Форма НЕ ВАЛИДНА - показываем ошибки
+      console.error('Password validation errors:', result.errors);
+
+      if (result.errors.password) {
+        const oldPasswordInput = this.children.oldPasswordInput as Input;
+        oldPasswordInput.setProps({ error: result.errors.password });
+      }
+
+      if (result.errors.newPassword) {
+        const newPasswordInput = this.children.newPasswordInput as Input;
+        newPasswordInput.setProps({ error: result.errors.newPassword });
+      }
+
+      // ВАЖНО: Прерываем выполнение, не отправляем форму
       return;
     }
 
-    console.log('Password changed:', data);
+    // Форма ВАЛИДНА - можно отправлять
+    console.log('✅ Password changed');
+    console.log('✅ Пароли валидны, можно отправить на сервер');
+    // TODO: Отправить на API
   }
 
   protected render(): DocumentFragment {

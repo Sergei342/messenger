@@ -36,6 +36,24 @@ export class MessengerPage extends Block<BlockProps> {
     if (form) {
       form.addEventListener('submit', this.handleSubmit.bind(this));
     }
+
+    // Добавляем обработчики blur для поля сообщения
+    const messageInput = this.children.messageInput as Input;
+    const messageElement = messageInput.element?.querySelector('input');
+
+    if (messageElement) {
+      messageElement.addEventListener('blur', () => {
+        const value = messageElement.value;
+        const result = validateField(ValidationRules.MESSAGE, value);
+        if (!result.isValid) {
+          messageInput.setProps({ error: result.error });
+        }
+      });
+
+      messageElement.addEventListener('focus', () => {
+        messageInput.setProps({ error: '' });
+      });
+    }
   }
 
   private handleSubmit(e: Event): void {
@@ -44,15 +62,23 @@ export class MessengerPage extends Block<BlockProps> {
     const messageInput = this.children.messageInput as Input;
     const message = messageInput.getValue();
 
+    // Валидация при submit
     const result = validateField(ValidationRules.MESSAGE, message);
 
     if (!result.isValid) {
+      // Сообщение НЕ ВАЛИДНО - показываем ошибку
+      console.error('Message validation error:', result.error);
       messageInput.setProps({ error: result.error });
+
+      // ВАЖНО: Прерываем выполнение, не отправляем сообщение
       return;
     }
 
-    console.log('Message sent:', message);
-    messageInput.setValue('');
+    // Сообщение ВАЛИДНО - можно отправлять
+    console.log('✅ Message sent:', message);
+    console.log('✅ Сообщение валидно, можно отправить на сервер');
+    messageInput.setValue(''); // Очищаем поле
+    // TODO: Отправить на API
   }
 
   protected render(): DocumentFragment {

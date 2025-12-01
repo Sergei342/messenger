@@ -45,6 +45,49 @@ export class LoginPage extends Block<BlockProps> {
     if (form) {
       form.addEventListener('submit', this.handleSubmit.bind(this));
     }
+
+    this.setupInputValidation();
+  }
+
+  private setupInputValidation(): void {
+    const loginInput = this.children.loginInput as Input;
+    const passwordInput = this.children.passwordInput as Input;
+
+    const loginElement = loginInput.element?.querySelector('input');
+    const passwordElement = passwordInput.element?.querySelector('input');
+
+    if (loginElement) {
+      this.addValidationListeners(loginElement, loginInput, 'login');
+    }
+
+    if (passwordElement) {
+      this.addValidationListeners(passwordElement, passwordInput, 'password');
+    }
+  }
+
+  private addValidationListeners(
+      element: HTMLInputElement,
+      input: Input,
+      fieldName: string
+  ): void {
+    element.addEventListener('blur', () => {
+      // Используем requestAnimationFrame для отложенного обновления
+      // Это позволяет избежать конфликта с обработкой события blur
+      requestAnimationFrame(() => {
+        const value = element.value;
+        const result = validateForm({ [fieldName]: value });
+
+        if (result.errors[fieldName]) {
+          input.setProps({ error: result.errors[fieldName] });
+        }
+      });
+    });
+
+    element.addEventListener('focus', () => {
+      requestAnimationFrame(() => {
+        input.setProps({ error: '' });
+      });
+    });
   }
 
   private handleSubmit(e: Event): void {
@@ -57,20 +100,28 @@ export class LoginPage extends Block<BlockProps> {
       data[key] = value as string;
     });
 
+    // Валидация при submit
     const result = validateForm(data);
 
     if (!result.isValid) {
-      console.log('Validation errors:', result.errors);
+      // Форма НЕ ВАЛИДНА - показываем ошибки
+      console.error('Validation errors:', result.errors);
+
       Object.entries(result.errors).forEach(([field, error]) => {
         const input = this.children[`${field}Input`] as Input;
         if (input) {
           input.setProps({ error });
         }
       });
+
+      // ВАЖНО: Прерываем выполнение, не отправляем форму
       return;
     }
 
-    console.log('Login form data:', data);
+    // Форма ВАЛИДНА - можно отправлять
+    console.log('✅ Login form data:', data);
+    console.log('✅ Форма валидна, данные можно отправить на сервер');
+    // TODO: Отправить на API
   }
 
   protected render(): DocumentFragment {

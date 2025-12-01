@@ -83,6 +83,42 @@ export class SignUpPage extends Block<BlockProps> {
     if (form) {
       form.addEventListener('submit', this.handleSubmit.bind(this));
     }
+
+    this.addBlurHandlers();
+  }
+
+  private addBlurHandlers(): void {
+    const fields = [
+      { name: 'first_name', child: 'firstNameInput' },
+      { name: 'second_name', child: 'secondNameInput' },
+      { name: 'login', child: 'loginInput' },
+      { name: 'email', child: 'emailInput' },
+      { name: 'password', child: 'passwordInput' },
+      { name: 'phone', child: 'phoneInput' },
+    ];
+
+    fields.forEach(({ name, child }) => {
+      const input = this.children[child] as Input;
+      const element = input.element?.querySelector('input');
+
+      if (element) {
+        element.addEventListener('blur', () => {
+          requestAnimationFrame(() => {
+            const value = element.value;
+            const result = validateForm({ [name]: value });
+            if (result.errors[name]) {
+              input.setProps({ error: result.errors[name] });
+            }
+          });
+        });
+
+        element.addEventListener('focus', () => {
+          requestAnimationFrame(() => {
+            input.setProps({ error: '' });
+          });
+        });
+      }
+    });
   }
 
   private handleSubmit(e: Event): void {
@@ -95,20 +131,28 @@ export class SignUpPage extends Block<BlockProps> {
       data[key] = value as string;
     });
 
+    // Валидация при submit
     const result = validateForm(data);
 
     if (!result.isValid) {
-      console.log('Validation errors:', result.errors);
+      // Форма НЕ ВАЛИДНА - показываем ошибки
+      console.error('Sign up validation errors:', result.errors);
+
       Object.entries(result.errors).forEach(([field, error]) => {
         const input = this.children[`${field}Input`] as Input;
         if (input) {
           input.setProps({ error });
         }
       });
+
+      // ВАЖНО: Прерываем выполнение, не отправляем форму
       return;
     }
 
-    console.log('Sign up form data:', data);
+    // Форма ВАЛИДНА - можно отправлять
+    console.log('✅ Sign up form data:', data);
+    console.log('✅ Форма регистрации валидна, данные можно отправить на сервер');
+    // TODO: Отправить на API
   }
 
   protected render(): DocumentFragment {

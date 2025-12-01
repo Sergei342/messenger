@@ -116,15 +116,20 @@ export abstract class Block<P extends BlockProps = BlockProps> {
 
   private _render(): void {
     const fragment = this.render();
-
     const newElement = fragment.firstElementChild as HTMLElement;
 
     if (this._element && newElement) {
       this._removeEvents();
-      this._element.replaceWith(newElement);
-    }
 
-    this._element = newElement;
+      // Проверяем, что элемент всё ещё находится в DOM
+      if (this._element.parentNode) {
+        this._element.replaceWith(newElement);
+      }
+
+      this._element = newElement;
+    } else if (newElement) {
+      this._element = newElement;
+    }
 
     this._addEvents();
   }
