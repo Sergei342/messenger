@@ -43,7 +43,7 @@ export class MessengerPage extends Block<BlockProps> {
 
     if (messageElement) {
       messageElement.addEventListener('blur', () => {
-        const value = messageElement.value;
+        const { value } = messageElement;
         const result = validateField(ValidationRules.MESSAGE, value);
         if (!result.isValid) {
           messageInput.setProps({ error: result.error });

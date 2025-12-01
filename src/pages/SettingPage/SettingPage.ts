@@ -130,7 +130,7 @@ export class SettingsPage extends Block<BlockProps> {
       if (element) {
         element.addEventListener('blur', () => {
           requestAnimationFrame(() => {
-            const value = element.value;
+            const { value } = element;
             const result = validateForm({ [name]: value });
             if (result.errors[name]) {
               input.setProps({ error: result.errors[name] });
@@ -152,14 +152,14 @@ export class SettingsPage extends Block<BlockProps> {
       { name: 'newPassword', child: 'newPasswordInput' },
     ];
 
-    passwordFields.forEach(({child }) => {
+    passwordFields.forEach(({ child }) => {
       const input = this.children[child] as Input;
       const element = input.element?.querySelector('input');
 
       if (element) {
         element.addEventListener('blur', () => {
           requestAnimationFrame(() => {
-            const value = element.value;
+            const { value } = element;
             // Для паролей используем правило PASSWORD
             const result = validateForm({ password: value });
             if (result.errors.password) {

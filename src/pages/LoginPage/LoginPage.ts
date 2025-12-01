@@ -66,15 +66,15 @@ export class LoginPage extends Block<BlockProps> {
   }
 
   private addValidationListeners(
-      element: HTMLInputElement,
-      input: Input,
-      fieldName: string
+    element: HTMLInputElement,
+    input: Input,
+    fieldName: string,
   ): void {
     element.addEventListener('blur', () => {
       // Используем requestAnimationFrame для отложенного обновления
       // Это позволяет избежать конфликта с обработкой события blur
       requestAnimationFrame(() => {
-        const value = element.value;
+        const { value } = element;
         const result = validateForm({ [fieldName]: value });
 
         if (result.errors[fieldName]) {

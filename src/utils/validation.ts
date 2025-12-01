@@ -49,8 +49,8 @@ export interface ValidationResult {
 }
 
 export function validateField(
-    rule: ValidationRules,
-    value: string,
+  rule: ValidationRules,
+  value: string,
 ): ValidationResult {
   if (!value || value.trim() === '') {
     return {

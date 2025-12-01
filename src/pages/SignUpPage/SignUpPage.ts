@@ -104,7 +104,7 @@ export class SignUpPage extends Block<BlockProps> {
       if (element) {
         element.addEventListener('blur', () => {
           requestAnimationFrame(() => {
-            const value = element.value;
+            const { value } = element;
             const result = validateForm({ [name]: value });
             if (result.errors[name]) {
               input.setProps({ error: result.errors[name] });
