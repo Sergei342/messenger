@@ -1,0 +1,76 @@
+<div class="page">
+    <main class="messenger-page">
+        <aside class="chat-list">
+            <div class="chat-list-header">
+                <h2>Чаты</h2>
+            </div>
+            <div class="chats">
+                <div class="chat-item active">
+                    <div class="avatar"></div>
+                    <div class="chat-info">
+                        <div class="chat-name">Андрей Петров</div>
+                        <div class="chat-message">Привет! Как дела?</div>
+                    </div>
+                    <div class="chat-time">10:30</div>
+                </div>
+                <div class="chat-item">
+                    <div class="avatar"></div>
+                    <div class="chat-info">
+                        <div class="chat-name">Мария Иванова</div>
+                        <div class="chat-message">Созвонимся завтра?</div>
+                    </div>
+                    <div class="chat-time">Вчера</div>
+                </div>
+                <div class="chat-item">
+                    <div class="avatar"></div>
+                    <div class="chat-info">
+                        <div class="chat-name">Команда проекта</div>
+                        <div class="chat-message">Встреча перенесена на 15:00</div>
+                    </div>
+                    <div class="chat-time">15.11</div>
+                </div>
+            </div>
+        </aside>
+
+        <section class="chat-window">
+            <header class="chat-header">
+                <div class="chat-header-info">
+                    <div class="avatar avatar-small"></div>
+                    <h2>Андрей Петров</h2>
+                </div>
+                <a href="./settings.html" class="settings-link">Настройки</a>
+            </header>
+
+            <div class="messages">
+                <div class="message-date">15 ноября</div>
+                <div class="message">
+                    <div class="message-bubble">Привет! Как дела?</div>
+                    <div class="message-time">10:30</div>
+                </div>
+                <div class="message own">
+                    <div class="message-bubble">Привет! Всё отлично, спасибо! А у тебя?</div>
+                    <div class="message-time">10:32</div>
+                </div>
+                <div class="message">
+                    <div class="message-bubble">Тоже хорошо! Хочешь созвониться сегодня?</div>
+                    <div class="message-time">10:35</div>
+                </div>
+                <div class="message own">
+                    <div class="message-bubble">Да, давай в 18:00</div>
+                    <div class="message-time">10:36</div>
+                </div>
+            </div>
+
+            <footer class="message-form-container">
+                <form class="message-form">
+                    <div class="message-input-wrapper">
+                        {{{messageInput}}}
+                    </div>
+                    <div class="message-button-wrapper">
+                        {{{sendButton}}}
+                    </div>
+                </form>
+            </footer>
+        </section>
+    </main>
+</div>
