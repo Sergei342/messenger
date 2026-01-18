@@ -1,3 +1,5 @@
+import { Router } from '@core/Router';
+import AuthController from '@/controllers/AuthController';
 import { LoginPage } from '@pages/LoginPage';
 import { SignUpPage } from '@pages/SignUpPage';
 import { MessengerPage } from '@pages/MessengerPage';
@@ -5,43 +7,68 @@ import { SettingsPage } from '@pages/SettingPage';
 import { ErrorPage } from '@pages/ErrorPage';
 import '@/styles/main.scss';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const root = document.getElementById('app');
+// Routes enum for type safety
+export enum Routes {
+  Login = '/',
+  SignUp = '/sign-up',
+  Messenger = '/messenger',
+  Settings = '/settings',
+  Error404 = '/404',
+  Error500 = '/500',
+}
 
-  if (!root) {
-    throw new Error('Root element not found');
-  }
+// Protected routes that require authentication
+const protectedRoutes = [Routes.Messenger, Routes.Settings];
 
-  const path = window.location.pathname;
+// Public routes that should redirect to messenger if user is authenticated
+const publicRoutes = [Routes.Login, Routes.SignUp];
 
-  let page;
-
-  if (path === '/' || path === '/index.html') {
-    page = new LoginPage();
-  } else if (path === '/sign-up.html') {
-    page = new SignUpPage();
-  } else if (path === '/messenger.html') {
-    page = new MessengerPage();
-  } else if (path === '/settings.html') {
-    page = new SettingsPage();
-  } else if (path === '/404.html') {
-    page = new ErrorPage({
+// Error page wrapper classes
+class Error404Page extends ErrorPage {
+  constructor() {
+    super({
       code: '404',
       message: 'Страница не найдена',
     });
-  } else if (path === '/500.html') {
-    page = new ErrorPage({
+  }
+}
+
+class Error500Page extends ErrorPage {
+  constructor() {
+    super({
       code: '500',
       message: 'Ошибка сервера',
     });
   }
+}
 
-  if (page) {
-    const content = page.getContent();
+async function initApp(): Promise<void> {
+  // Check authentication status
+  const isAuthenticated = await AuthController.checkAuth();
+  const currentPath = window.location.pathname as Routes;
 
-    if (content) {
-      root.appendChild(content);
-      page.dispatchComponentDidMount();
-    }
+  // Initialize router
+  const router = new Router('#app');
+
+  // Register routes
+  router
+      .use(Routes.Login, LoginPage)
+      .use(Routes.SignUp, SignUpPage)
+      .use(Routes.Messenger, MessengerPage)
+      .use(Routes.Settings, SettingsPage)
+      .use(Routes.Error404, Error404Page)
+      .use(Routes.Error500, Error500Page)
+      .notFound(Error404Page);
+
+  // Handle authentication redirects
+  if (isAuthenticated && publicRoutes.includes(currentPath)) {
+    router.go(Routes.Messenger);
+  } else if (!isAuthenticated && protectedRoutes.includes(currentPath)) {
+    router.go(Routes.Login);
+  } else {
+    router.start();
   }
-});
+}
+
+// Start the app
+document.addEventListener('DOMContentLoaded', initApp);

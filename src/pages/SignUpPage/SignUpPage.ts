@@ -1,6 +1,8 @@
 import { Block, BlockProps } from '@core/Block';
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
+import { Router } from '@core/Router';
+import AuthController from '@/controllers/AuthController';
 import { ValidationRules, validateForm } from '@utils/validation';
 import template from './signup.hbs';
 
@@ -84,6 +86,16 @@ export class SignUpPage extends Block<BlockProps> {
       form.addEventListener('submit', this.handleSubmit.bind(this));
     }
 
+    // Добавляем обработчик для ссылки на вход
+    const loginLink = this.element?.querySelector('a[href*="index"], a[href="/"]');
+    if (loginLink) {
+      loginLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        const router = Router.getInstance();
+        router?.go('/');
+      });
+    }
+
     this.addBlurHandlers();
   }
 
@@ -121,7 +133,7 @@ export class SignUpPage extends Block<BlockProps> {
     });
   }
 
-  private handleSubmit(e: Event): void {
+  private async handleSubmit(e: Event): Promise<void> {
     e.preventDefault();
 
     const formData = new FormData(e.target as HTMLFormElement);
@@ -139,23 +151,38 @@ export class SignUpPage extends Block<BlockProps> {
       console.error('Sign up validation errors:', result.errors);
 
       Object.entries(result.errors).forEach(([field, error]) => {
-        const input = this.children[`${field}Input`] as Input;
+        const inputName = field === 'first_name' ? 'firstNameInput'
+            : field === 'second_name' ? 'secondNameInput'
+                : `${field}Input`;
+        const input = this.children[inputName] as Input;
         if (input) {
           input.setProps({ error });
         }
       });
 
-      // ВАЖНО: Прерываем выполнение, не отправляем форму
       return;
     }
 
-    // Форма ВАЛИДНА - можно отправлять
-    console.log('✅ Sign up form data:', data);
-    console.log('✅ Форма регистрации валидна, данные можно отправить на сервер');
-    // TODO: Отправить на API
+    // Отправляем на API
+    try {
+      await AuthController.signUp({
+        first_name: data.first_name,
+        second_name: data.second_name,
+        login: data.login,
+        email: data.email,
+        password: data.password,
+        phone: data.phone,
+      });
+    } catch (error) {
+      // Показываем ошибку от сервера
+      const loginInput = this.children.loginInput as Input;
+      const errorMessage = (error as { reason?: string })?.reason || 'Ошибка регистрации';
+      loginInput.setProps({ error: errorMessage });
+    }
   }
 
   protected render(): DocumentFragment {
     return this.compile(template, this.props);
   }
 }
+

@@ -257,3 +257,4 @@ export class SettingsPage extends Block<BlockProps> {
     return this.compile(template, this.props);
   }
 }
+

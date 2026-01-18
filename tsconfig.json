@@ -30,7 +30,9 @@
       "@pages/*": ["src/pages/*"],
       "@utils/*": ["src/utils/*"],
       "@services/*": ["src/services/*"],
-      "@core/*": ["src/core/*"]
+      "@core/*": ["src/core/*"],
+      "@api/*": ["src/api/*"],
+      "@controllers/*": ["src/controllers/*"]
     },
     "types": ["vite/client", "node"],
     "typeRoots": ["./node_modules/@types", "./src/types"]

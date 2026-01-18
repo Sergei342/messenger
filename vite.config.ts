@@ -21,6 +21,7 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    historyApiFallback: true,
   },
   preview: {
     port: 3000,
@@ -34,6 +35,8 @@ export default defineConfig({
       '@utils': resolve(__dirname, 'src/utils'),
       '@services': resolve(__dirname, 'src/services'),
       '@core': resolve(__dirname, 'src/core'),
+      '@api': resolve(__dirname, 'src/api'),
+      '@controllers': resolve(__dirname, 'src/controllers'),
     },
   },
 });
