@@ -35,13 +35,13 @@ async function initApp(): Promise<void> {
 
   // Register routes
   router
-      .use(Routes.Login, LoginPage)
-      .use(Routes.SignUp, SignUpPage)
-      .use(Routes.Messenger, MessengerPage)
-      .use(Routes.Settings, SettingsPage)
-      .use(Routes.Error404, Error404Page)
-      .use(Routes.Error500, Error500Page)
-      .notFound(Error404Page);
+    .use(Routes.Login, LoginPage)
+    .use(Routes.SignUp, SignUpPage)
+    .use(Routes.Messenger, MessengerPage)
+    .use(Routes.Settings, SettingsPage)
+    .use(Routes.Error404, Error404Page)
+    .use(Routes.Error500, Error500Page)
+    .notFound(Error404Page);
 
   // Handle authentication redirects
   if (isAuthenticated && publicRoutes.includes(currentPath)) {
@@ -52,7 +52,6 @@ async function initApp(): Promise<void> {
     router.start();
   }
 }
-
 
 // Start the app
 document.addEventListener('DOMContentLoaded', initApp);
