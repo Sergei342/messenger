@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import string from 'vite-plugin-string';
+import history from 'connect-history-api-fallback';
 
 export default defineConfig({
   plugins: [
@@ -21,7 +22,10 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    historyApiFallback: true,
+    middlewareMode: true,
+    setup: ({ app }) => {
+      app.use(history());
+    },
   },
   preview: {
     port: 3000,

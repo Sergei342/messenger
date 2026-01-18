@@ -8,6 +8,7 @@ export interface ProfileData {
   login: string;
   email: string;
   phone: string;
+  [key: string]: unknown;
 }
 
 export interface PasswordData {
