@@ -85,4 +85,3 @@ export class MessengerPage extends Block<BlockProps> {
     return this.compile(template, this.props);
   }
 }
-

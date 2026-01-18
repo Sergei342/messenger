@@ -2,8 +2,9 @@ import { Block, BlockProps } from '@core/Block';
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
 import { Router } from '@core/Router';
-import AuthController from '@/controllers/AuthController';
 import { ValidationRules, validateForm } from '@utils/validation';
+// eslint-disable-next-line import/extensions
+import AuthController from '@/controllers/AuthController';
 import template from './signup.hbs';
 
 export class SignUpPage extends Block<BlockProps> {
@@ -151,9 +152,12 @@ export class SignUpPage extends Block<BlockProps> {
       console.error('Sign up validation errors:', result.errors);
 
       Object.entries(result.errors).forEach(([field, error]) => {
-        const inputName = field === 'first_name' ? 'firstNameInput'
-            : field === 'second_name' ? 'secondNameInput'
-                : `${field}Input`;
+        let inputName = `${field}Input`;
+        if (field === 'first_name') {
+          inputName = 'firstNameInput';
+        } else if (field === 'second_name') {
+          inputName = 'secondNameInput';
+        }
         const input = this.children[inputName] as Input;
         if (input) {
           input.setProps({ error });
@@ -185,4 +189,3 @@ export class SignUpPage extends Block<BlockProps> {
     return this.compile(template, this.props);
   }
 }
-

@@ -128,4 +128,3 @@ export class LoginPage extends Block<BlockProps> {
     return this.compile(template, this.props);
   }
 }
-

@@ -1,136 +1,136 @@
-import ChatsAPI from '@/api/ChatsAPI';
 import { WSTransport, WSTransportEvents, WSMessage } from '@core/WSTransport';
 import { Store, Message } from '@core/Store';
+// eslint-disable-next-line import/extensions
+import ChatsAPI from '@/api/ChatsAPI';
 
 class MessagesController {
-    private sockets: Map<number, WSTransport> = new Map();
+  private sockets: Map<number, WSTransport> = new Map();
 
-    private store: Store;
+  private store: Store;
 
-    constructor() {
-        this.store = Store.getInstance();
+  constructor() {
+    this.store = Store.getInstance();
+  }
+
+  async connect(chatId: number): Promise<void> {
+    // Close existing connection for this chat
+    if (this.sockets.has(chatId)) {
+      this.sockets.get(chatId)!.close();
     }
 
-    async connect(chatId: number): Promise<void> {
-        // Close existing connection for this chat
-        if (this.sockets.has(chatId)) {
-            this.sockets.get(chatId)!.close();
-        }
+    const state = this.store.getState();
+    const userId = state.user?.id;
 
-        const state = this.store.getState();
-        const userId = state.user?.id;
-
-        if (!userId) {
-            throw new Error('User not authenticated');
-        }
-
-        try {
-            const { token } = await ChatsAPI.getToken(chatId);
-            const socket = new WSTransport(
-                `wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`,
-            );
-
-            this.sockets.set(chatId, socket);
-
-            await socket.connect();
-
-            this.subscribe(socket, chatId);
-        } catch (error) {
-            console.error('Failed to connect to chat:', error);
-            throw error;
-        }
+    if (!userId) {
+      throw new Error('User not authenticated');
     }
 
-    private subscribe(socket: WSTransport, chatId: number): void {
-        socket.on(WSTransportEvents.Message, (data: unknown) => {
-            const message = data as WSMessage | WSMessage[];
+    try {
+      const { token } = await ChatsAPI.getToken(chatId);
+      const socket = new WSTransport(
+        `wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`,
+      );
 
-            if (Array.isArray(message)) {
-                // Old messages
-                const messages = message.reverse().map((m) => this.transformMessage(m));
-                this.store.setMessages(chatId, messages);
-            } else if (message.type === 'message' || message.type === 'file') {
-                // New message
-                this.store.addMessage(chatId, this.transformMessage(message));
-            }
-        });
+      this.sockets.set(chatId, socket);
 
-        socket.on(WSTransportEvents.Error, (error) => {
-            console.error('WebSocket error:', error);
-        });
+      await socket.connect();
 
-        socket.on(WSTransportEvents.Close, () => {
-            this.sockets.delete(chatId);
-        });
+      this.subscribe(socket, chatId);
+    } catch (error) {
+      console.error('Failed to connect to chat:', error);
+      throw error;
+    }
+  }
+
+  private subscribe(socket: WSTransport, chatId: number): void {
+    socket.on(WSTransportEvents.Message, (data: unknown) => {
+      const message = data as WSMessage | WSMessage[];
+
+      if (Array.isArray(message)) {
+        // Old messages
+        const messages = message.reverse().map((m) => this.transformMessage(m));
+        this.store.setMessages(chatId, messages);
+      } else if (message.type === 'message' || message.type === 'file') {
+        // New message
+        this.store.addMessage(chatId, this.transformMessage(message));
+      }
+    });
+
+    socket.on(WSTransportEvents.Error, (error) => {
+      console.error('WebSocket error:', error);
+    });
+
+    socket.on(WSTransportEvents.Close, () => {
+      this.sockets.delete(chatId);
+    });
+  }
+
+  private transformMessage(message: WSMessage): Message {
+    return {
+      id: message.id || 0,
+      user_id: message.user_id || 0,
+      chat_id: message.chat_id || 0,
+      type: message.type || 'message',
+      time: message.time || new Date().toISOString(),
+      content: message.content || '',
+      is_read: message.is_read || false,
+      file: message.file,
+    };
+  }
+
+  async sendMessage(chatId: number, content: string): Promise<void> {
+    const socket = this.sockets.get(chatId);
+
+    if (!socket) {
+      throw new Error('Socket not connected for chat');
     }
 
-    private transformMessage(message: WSMessage): Message {
-        return {
-            id: message.id || 0,
-            user_id: message.user_id || 0,
-            chat_id: message.chat_id || 0,
-            type: message.type || 'message',
-            time: message.time || new Date().toISOString(),
-            content: message.content || '',
-            is_read: message.is_read || false,
-            file: message.file,
-        };
+    socket.send({
+      type: 'message',
+      content,
+    });
+  }
+
+  async sendFile(chatId: number, resourceId: number): Promise<void> {
+    const socket = this.sockets.get(chatId);
+
+    if (!socket) {
+      throw new Error('Socket not connected for chat');
     }
 
-    async sendMessage(chatId: number, content: string): Promise<void> {
-        const socket = this.sockets.get(chatId);
+    socket.send({
+      type: 'file',
+      content: String(resourceId),
+    });
+  }
 
-        if (!socket) {
-            throw new Error('Socket not connected for chat');
-        }
+  async fetchOldMessages(chatId: number, offset: number = 0): Promise<void> {
+    const socket = this.sockets.get(chatId);
 
-        socket.send({
-            type: 'message',
-            content,
-        });
+    if (!socket) {
+      throw new Error('Socket not connected for chat');
     }
 
-    async sendFile(chatId: number, resourceId: number): Promise<void> {
-        const socket = this.sockets.get(chatId);
+    socket.send({
+      type: 'get old',
+      content: String(offset),
+    });
+  }
 
-        if (!socket) {
-            throw new Error('Socket not connected for chat');
-        }
-
-        socket.send({
-            type: 'file',
-            content: String(resourceId),
-        });
+  disconnect(chatId: number): void {
+    const socket = this.sockets.get(chatId);
+    if (socket) {
+      socket.close();
+      this.sockets.delete(chatId);
     }
+  }
 
-    async fetchOldMessages(chatId: number, offset: number = 0): Promise<void> {
-        const socket = this.sockets.get(chatId);
-
-        if (!socket) {
-            throw new Error('Socket not connected for chat');
-        }
-
-        socket.send({
-            type: 'get old',
-            content: String(offset),
-        });
-    }
-
-    disconnect(chatId: number): void {
-        const socket = this.sockets.get(chatId);
-        if (socket) {
-            socket.close();
-            this.sockets.delete(chatId);
-        }
-    }
-
-    disconnectAll(): void {
-        this.sockets.forEach((socket) => {
-            socket.close();
-        });
-        this.sockets.clear();
-    }
+  disconnectAll(): void {
+    this.sockets.forEach((socket) => {
+      socket.close();
+    });
+    this.sockets.clear();
+  }
 }
 
 export default new MessagesController();
-
