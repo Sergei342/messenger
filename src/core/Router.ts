@@ -10,7 +10,7 @@ class Router {
 
   private currentRoute: Route | null = null;
 
-  private rootQuery: string;
+  public rootQuery: string;
 
   private notFoundRoute: Route | null = null;
 
