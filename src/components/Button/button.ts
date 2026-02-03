@@ -10,7 +10,7 @@ interface ButtonProps {
 }
 
 export class Button extends Block<ButtonProps> {
-  constructor(props: ButtonProps) {
+  constructor(props: { text: string; type: string; variant: string }) {
     super({
       ...props,
       type: props.type || 'button',

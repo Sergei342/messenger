@@ -2,6 +2,8 @@ import { Block, BlockProps } from '@core/Block';
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
 import { ValidationRules, validateForm } from '@utils/validation';
+import AuthController from '@/controllers/AuthController';
+import { Router } from '@core/Router';
 import template from './login.hbs';
 
 export class LoginPage extends Block<BlockProps> {
@@ -42,6 +44,7 @@ export class LoginPage extends Block<BlockProps> {
 
   protected componentDidMount(): void {
     const form = this.element?.querySelector('form');
+
     if (form) {
       form.addEventListener('submit', this.handleSubmit.bind(this));
     }
@@ -66,17 +69,13 @@ export class LoginPage extends Block<BlockProps> {
   }
 
   private addValidationListeners(
-    element: HTMLInputElement,
-    input: Input,
-    fieldName: string,
+      element: HTMLInputElement,
+      input: Input,
+      fieldName: string,
   ): void {
     element.addEventListener('blur', () => {
-      // Используем requestAnimationFrame для отложенного обновления
-      // Это позволяет избежать конфликта с обработкой события blur
       requestAnimationFrame(() => {
-        const { value } = element;
-        const result = validateForm({ [fieldName]: value });
-
+        const result = validateForm({ [fieldName]: element.value });
         if (result.errors[fieldName]) {
           input.setProps({ error: result.errors[fieldName] });
         }
@@ -90,38 +89,49 @@ export class LoginPage extends Block<BlockProps> {
     });
   }
 
-  private handleSubmit(e: Event): void {
+  private async handleSubmit(e: Event): Promise<void> {
     e.preventDefault();
 
     const formData = new FormData(e.target as HTMLFormElement);
     const data: Record<string, string> = {};
-
     formData.forEach((value, key) => {
       data[key] = value as string;
     });
 
-    // Валидация при submit
     const result = validateForm(data);
 
     if (!result.isValid) {
-      // Форма НЕ ВАЛИДНА - показываем ошибки
-      console.error('Validation errors:', result.errors);
-
       Object.entries(result.errors).forEach(([field, error]) => {
         const input = this.children[`${field}Input`] as Input;
-        if (input) {
-          input.setProps({ error });
-        }
+        if (input) input.setProps({ error });
       });
-
-      // ВАЖНО: Прерываем выполнение, не отправляем форму
       return;
     }
 
-    // Форма ВАЛИДНА - можно отправлять
-    console.log('✅ Login form data:', data);
-    console.log('✅ Форма валидна, данные можно отправить на сервер');
-    // TODO: Отправить на API
+    try {
+      // Сначала проверяем, авторизован ли пользователь
+      const isAuthenticated = await AuthController.checkAuth();
+
+      if (!isAuthenticated) {
+        // Если нет, выполняем логин
+        await AuthController.signIn({
+          login: data.login,
+          password: data.password,
+        });
+      }
+
+      // После успешного логина или если уже авторизован — идём в Messenger
+      Router.getInstance().go('/messenger');
+    } catch (error: any) {
+      // Игнорируем "User already in system" и продолжаем
+      if (error?.reason === 'User already in system') {
+        Router.getInstance().go('/messenger');
+        return;
+      }
+
+      const passwordInput = this.children.passwordInput as Input;
+      passwordInput.setProps({ error: 'Неверный логин или пароль' });
+    }
   }
 
   protected render(): DocumentFragment {

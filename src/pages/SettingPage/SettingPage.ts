@@ -1,19 +1,27 @@
 import { Block, BlockProps } from '@core/Block';
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
+import { Router } from '@core/Router';
+import { Store } from '@core/Store';
+import { BASE_URL } from '@/api/BaseAPI';
+import UserController from '@/controllers/UserController';
+import AuthController from '@/controllers/AuthController';
 import { ValidationRules, validateForm } from '@utils/validation';
 import template from './settings.hbs';
 
 export class SettingsPage extends Block<BlockProps> {
+  private store: Store;
+
   constructor() {
     super({});
+    this.store = Store.getInstance();
   }
 
   protected init(): void {
     const firstNameInput = new Input({
       name: 'first_name',
       label: 'Имя',
-      value: 'Иван',
+      value: '',
       required: true,
       validationRule: ValidationRules.FIRST_NAME,
     });
@@ -21,7 +29,7 @@ export class SettingsPage extends Block<BlockProps> {
     const secondNameInput = new Input({
       name: 'second_name',
       label: 'Фамилия',
-      value: 'Иванов',
+      value: '',
       required: true,
       validationRule: ValidationRules.SECOND_NAME,
     });
@@ -29,13 +37,13 @@ export class SettingsPage extends Block<BlockProps> {
     const displayNameInput = new Input({
       name: 'display_name',
       label: 'Отображаемое имя',
-      value: 'Ваня',
+      value: '',
     });
 
     const loginInput = new Input({
       name: 'login',
       label: 'Логин',
-      value: 'ivan_ivanov',
+      value: '',
       required: true,
       validationRule: ValidationRules.LOGIN,
     });
@@ -44,7 +52,7 @@ export class SettingsPage extends Block<BlockProps> {
       name: 'email',
       label: 'Email',
       type: 'email',
-      value: 'ivan@example.com',
+      value: '',
       required: true,
       validationRule: ValidationRules.EMAIL,
     });
@@ -53,7 +61,7 @@ export class SettingsPage extends Block<BlockProps> {
       name: 'phone',
       label: 'Телефон',
       type: 'tel',
-      value: '+79991234567',
+      value: '',
       required: true,
       validationRule: ValidationRules.PHONE,
     });
@@ -86,6 +94,12 @@ export class SettingsPage extends Block<BlockProps> {
       variant: 'primary',
     });
 
+    const logoutButton = new Button({
+      text: 'Выйти',
+      type: 'button',
+      variant: 'danger',
+    });
+
     this.children = {
       firstNameInput,
       secondNameInput,
@@ -97,10 +111,17 @@ export class SettingsPage extends Block<BlockProps> {
       newPasswordInput,
       saveProfileButton,
       savePasswordButton,
+      logoutButton,
     };
   }
 
   protected componentDidMount(): void {
+    // Загружаем данные пользователя в форму
+    this.loadUserData();
+
+    // Подписка на обновления Store
+    this.store.on('updated', this.loadUserData.bind(this));
+
     const profileForm = this.element?.querySelector('#profile-form');
     if (profileForm) {
       profileForm.addEventListener('submit', this.handleProfileSubmit.bind(this));
@@ -111,7 +132,50 @@ export class SettingsPage extends Block<BlockProps> {
       passwordForm.addEventListener('submit', this.handlePasswordSubmit.bind(this));
     }
 
+    // Обработчик загрузки аватара
+    const avatarUpload = this.element?.querySelector('.avatar-upload button');
+    if (avatarUpload) {
+      avatarUpload.addEventListener('click', this.handleAvatarUpload.bind(this));
+    }
+
+    // Обработчик выхода
+    const logoutBtn = this.element?.querySelector('.logout-section button');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', this.handleLogout.bind(this));
+    }
+
+    // Обработчик ссылки "Вернуться к чатам"
+    const backLink = this.element?.querySelector('a[data-link]');
+    if (backLink) {
+      backLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        const router = Router.getInstance();
+        router?.go('/messenger');
+      });
+    }
+
     this.addBlurHandlers();
+  }
+
+  private loadUserData(): void {
+    const state = this.store.getState();
+    const user = state.user;
+
+    if (user) {
+      (this.children.firstNameInput as Input).setValue(user.first_name || '');
+      (this.children.secondNameInput as Input).setValue(user.second_name || '');
+      (this.children.displayNameInput as Input).setValue(user.display_name || '');
+      (this.children.loginInput as Input).setValue(user.login || '');
+      (this.children.emailInput as Input).setValue(user.email || '');
+      (this.children.phoneInput as Input).setValue(user.phone || '');
+
+      // Обновляем аватар
+      const avatarEl = this.element?.querySelector('.avatar-large') as HTMLElement;
+      if (avatarEl && user.avatar) {
+        avatarEl.style.backgroundImage = `url(${BASE_URL}/resources${user.avatar})`;
+        avatarEl.style.backgroundSize = 'cover';
+      }
+    }
   }
 
   private addBlurHandlers(): void {
@@ -160,7 +224,6 @@ export class SettingsPage extends Block<BlockProps> {
         element.addEventListener('blur', () => {
           requestAnimationFrame(() => {
             const { value } = element;
-            // Для паролей используем правило PASSWORD
             const result = validateForm({ password: value });
             if (result.errors.password) {
               input.setProps({ error: result.errors.password });
@@ -177,7 +240,7 @@ export class SettingsPage extends Block<BlockProps> {
     });
   }
 
-  private handleProfileSubmit(e: Event): void {
+  private async handleProfileSubmit(e: Event): Promise<void> {
     e.preventDefault();
 
     const formData = new FormData(e.target as HTMLFormElement);
@@ -191,27 +254,40 @@ export class SettingsPage extends Block<BlockProps> {
     const result = validateForm(data);
 
     if (!result.isValid) {
-      // Форма НЕ ВАЛИДНА - показываем ошибки
       console.error('Profile validation errors:', result.errors);
 
       Object.entries(result.errors).forEach(([field, error]) => {
-        const input = this.children[`${field}Input`] as Input;
+        const inputName = field === 'first_name' ? 'firstNameInput'
+            : field === 'second_name' ? 'secondNameInput'
+                : field === 'display_name' ? 'displayNameInput'
+                    : `${field}Input`;
+        const input = this.children[inputName] as Input;
         if (input) {
           input.setProps({ error });
         }
       });
 
-      // ВАЖНО: Прерываем выполнение, не отправляем форму
       return;
     }
 
-    // Форма ВАЛИДНА - можно отправлять
-    console.log('✅ Profile updated:', data);
-    console.log('✅ Профиль валиден, данные можно отправить на сервер');
-    // TODO: Отправить на API
+    // Отправляем на API
+    try {
+      await UserController.updateProfile({
+        first_name: data.first_name,
+        second_name: data.second_name,
+        display_name: data.display_name || '',
+        login: data.login,
+        email: data.email,
+        phone: data.phone,
+      });
+      alert('Профиль успешно обновлён');
+    } catch (error) {
+      const errorMessage = (error as { reason?: string })?.reason || 'Ошибка обновления профиля';
+      alert(errorMessage);
+    }
   }
 
-  private handlePasswordSubmit(e: Event): void {
+  private async handlePasswordSubmit(e: Event): Promise<void> {
     e.preventDefault();
 
     const formData = new FormData(e.target as HTMLFormElement);
@@ -221,7 +297,7 @@ export class SettingsPage extends Block<BlockProps> {
       data[key] = value as string;
     });
 
-    // Валидация паролей (проверяем как password)
+    // Валидация паролей
     const validationData = {
       password: data.oldPassword,
       newPassword: data.newPassword,
@@ -230,7 +306,6 @@ export class SettingsPage extends Block<BlockProps> {
     const result = validateForm(validationData);
 
     if (!result.isValid) {
-      // Форма НЕ ВАЛИДНА - показываем ошибки
       console.error('Password validation errors:', result.errors);
 
       if (result.errors.password) {
@@ -243,14 +318,47 @@ export class SettingsPage extends Block<BlockProps> {
         newPasswordInput.setProps({ error: result.errors.newPassword });
       }
 
-      // ВАЖНО: Прерываем выполнение, не отправляем форму
       return;
     }
 
-    // Форма ВАЛИДНА - можно отправлять
-    console.log('✅ Password changed');
-    console.log('✅ Пароли валидны, можно отправить на сервер');
-    // TODO: Отправить на API
+    // Отправляем на API
+    try {
+      await UserController.updatePassword({
+        oldPassword: data.oldPassword,
+        newPassword: data.newPassword,
+      });
+      alert('Пароль успешно изменён');
+      (this.children.oldPasswordInput as Input).setValue('');
+      (this.children.newPasswordInput as Input).setValue('');
+    } catch (error) {
+      const errorMessage = (error as { reason?: string })?.reason || 'Ошибка смены пароля';
+      (this.children.oldPasswordInput as Input).setProps({ error: errorMessage });
+    }
+  }
+
+  private handleAvatarUpload(): void {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+
+    input.addEventListener('change', async () => {
+      const file = input.files?.[0];
+      if (file) {
+        try {
+          await UserController.updateAvatar(file);
+          alert('Аватар обновлён');
+        } catch (error) {
+          const errorMessage = (error as { reason?: string })?.reason || 'Ошибка загрузки аватара';
+          alert(errorMessage);
+        }
+      }
+    });
+
+    input.click();
+  }
+
+  private async handleLogout(): Promise<void> {
+    await AuthController.logout();
   }
 
   protected render(): DocumentFragment {

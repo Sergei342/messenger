@@ -11,8 +11,6 @@ interface InputProps {
   required?: boolean;
   validationRule?: ValidationRules;
   error?: string;
-  onBlur?: (e: FocusEvent) => void;
-  onFocus?: (e: FocusEvent) => void;
   [key: string]: unknown;
 }
 
@@ -27,8 +25,9 @@ export class Input extends Block<InputProps> {
   }
 
   protected init(): void {
-    this.props.onBlur = this.handleBlur.bind(this);
-    this.props.onFocus = this.handleFocus.bind(this);
+    const inputEl = this.element?.querySelector('input');
+    inputEl?.addEventListener('blur', this.handleBlur.bind(this));
+    inputEl?.addEventListener('focus', this.handleFocus.bind(this));
   }
 
   private handleBlur(e: FocusEvent): void {
@@ -37,12 +36,14 @@ export class Input extends Block<InputProps> {
 
     if (validationRule) {
       const result = validateField(validationRule, input.value);
-      this.setProps({ error: result.error });
+      const errorEl = this.element?.querySelector('.error');
+      if (errorEl) errorEl.textContent = result.error || '';
     }
   }
 
   private handleFocus(): void {
-    this.setProps({ error: '' });
+    const errorEl = this.element?.querySelector('.error');
+    if (errorEl) errorEl.textContent = '';
   }
 
   public getValue(): string {
@@ -52,9 +53,7 @@ export class Input extends Block<InputProps> {
 
   public setValue(value: string): void {
     const input = this.element?.querySelector('input');
-    if (input) {
-      input.value = value;
-    }
+    if (input) input.value = value;
   }
 
   protected render(): DocumentFragment {

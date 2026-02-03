@@ -3,31 +3,31 @@
         <aside class="chat-list">
             <div class="chat-list-header">
                 <h2>Чаты</h2>
+                <a href="/settings" class="settings-link" data-link>⚙️</a>
             </div>
+
+            <div class="create-chat-section">
+                <div class="input-row">
+                    {{{createChatInput}}}
+                    {{{createChatButton}}}
+                </div>
+
+            </div>
+
             <div class="chats">
-                <div class="chat-item active">
-                    <div class="avatar"></div>
-                    <div class="chat-info">
-                        <div class="chat-name">Андрей Петров</div>
-                        <div class="chat-message">Привет! Как дела?</div>
-                    </div>
-                    <div class="chat-time">10:30</div>
+                <!-- Чаты загружаются динамически -->
+            </div>
+            <div class="chat-actions">
+                <div class="add-user-section">
+                    {{{addUserInput}}}
+                    {{{addUserButton}}}
                 </div>
-                <div class="chat-item">
-                    <div class="avatar"></div>
-                    <div class="chat-info">
-                        <div class="chat-name">Мария Иванова</div>
-                        <div class="chat-message">Созвонимся завтра?</div>
-                    </div>
-                    <div class="chat-time">Вчера</div>
+                <div class="remove-user-section">
+                    {{{removeUserInput}}}
+                    {{{removeUserButton}}}
                 </div>
-                <div class="chat-item">
-                    <div class="avatar"></div>
-                    <div class="chat-info">
-                        <div class="chat-name">Команда проекта</div>
-                        <div class="chat-message">Встреча перенесена на 15:00</div>
-                    </div>
-                    <div class="chat-time">15.11</div>
+                <div class="delete-chat-section">
+                    {{{deleteChatButton}}}
                 </div>
             </div>
         </aside>
@@ -35,30 +35,13 @@
         <section class="chat-window">
             <header class="chat-header">
                 <div class="chat-header-info">
-                    <div class="avatar avatar-small"></div>
-                    <h2>Андрей Петров</h2>
+                    <h2>Выберите чат</h2>
                 </div>
-                <a href="./settings.html" class="settings-link">Настройки</a>
+
             </header>
 
             <div class="messages">
-                <div class="message-date">15 ноября</div>
-                <div class="message">
-                    <div class="message-bubble">Привет! Как дела?</div>
-                    <div class="message-time">10:30</div>
-                </div>
-                <div class="message own">
-                    <div class="message-bubble">Привет! Всё отлично, спасибо! А у тебя?</div>
-                    <div class="message-time">10:32</div>
-                </div>
-                <div class="message">
-                    <div class="message-bubble">Тоже хорошо! Хочешь созвониться сегодня?</div>
-                    <div class="message-time">10:35</div>
-                </div>
-                <div class="message own">
-                    <div class="message-bubble">Да, давай в 18:00</div>
-                    <div class="message-time">10:36</div>
-                </div>
+                <div class="no-messages">Выберите чат для начала общения</div>
             </div>
 
             <footer class="message-form-container">
@@ -74,4 +57,3 @@
         </section>
     </main>
 </div>
-
