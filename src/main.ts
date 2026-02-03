@@ -33,13 +33,13 @@ async function initApp(): Promise<void> {
 
   // Регистрация маршрутов
   router
-      .use(Routes.Login, LoginPage)
-      .use(Routes.SignUp, SignUpPage)
-      .use(Routes.Messenger, MessengerPage)
-      .use(Routes.Settings, SettingsPage)
-      .use(Routes.Error404, Error404Page)
-      .use(Routes.Error500, Error500Page)
-      .notFound(Error404Page);
+    .use(Routes.Login, LoginPage)
+    .use(Routes.SignUp, SignUpPage)
+    .use(Routes.Messenger, MessengerPage)
+    .use(Routes.Settings, SettingsPage)
+    .use(Routes.Error404, Error404Page)
+    .use(Routes.Error500, Error500Page)
+    .notFound(Error404Page);
 
   // Редиректы по аутентификации
   if (isAuthenticated && publicRoutes.includes(currentPath)) {

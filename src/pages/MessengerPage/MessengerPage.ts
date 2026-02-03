@@ -2,7 +2,9 @@ import { Block, BlockProps } from '@core/Block';
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
 import { Router } from '@core/Router';
-import { Store, Chat, Message, User } from '@core/Store';
+import {
+  Store, Chat, Message, User,
+} from '@core/Store';
 import { BASE_URL } from '@/api/BaseAPI';
 import ChatsAPI from '@/api/ChatsAPI';
 import UserController from '@/controllers/UserController';
@@ -11,7 +13,9 @@ import template from './messenger.hbs';
 
 export class MessengerPage extends Block<BlockProps> {
   private store: Store;
+
   private chatsContainer: HTMLElement | null = null;
+
   private messagesContainer: HTMLElement | null = null;
 
   constructor() {
@@ -179,13 +183,13 @@ export class MessengerPage extends Block<BlockProps> {
       if (state.currentChat === chat.id) chatItem.classList.add('active');
 
       const avatarStyle = chat.avatar
-          ? `background-image: url(${BASE_URL}/resources${chat.avatar}); background-size: cover;`
-          : '';
+        ? `background-image: url(${BASE_URL}/resources${chat.avatar}); background-size: cover;`
+        : '';
 
       const lastMessageText = chat.last_message?.content || 'Нет сообщений';
       const lastMessageTime = chat.last_message?.time
-          ? new Date(chat.last_message.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-          : '';
+        ? new Date(chat.last_message.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        : '';
 
       chatItem.innerHTML = `
         <div class="avatar" style="${avatarStyle}"></div>

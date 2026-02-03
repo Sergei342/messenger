@@ -22,6 +22,8 @@
     "import/prefer-default-export": "off",
     "class-methods-use-this": "off",
     "no-console": "off",
+    "no-alert": "off",
+    "no-restricted-globals": "off",
     "no-underscore-dangle": ["error", { "allowAfterThis": true }],
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
@@ -42,9 +44,9 @@
   },
   "settings": {
     "import/resolver": {
-      "node": {
-        "extensions": [".ts", ".js"],
-        "moduleDirectory": ["node_modules", "src"]
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "./tsconfig.json"
       }
     }
   }

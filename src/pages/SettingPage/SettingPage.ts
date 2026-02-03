@@ -3,10 +3,10 @@ import { Input } from '@components/Input';
 import { Button } from '@components/Button';
 import { Router } from '@core/Router';
 import { Store } from '@core/Store';
+import { ValidationRules, validateForm } from '@utils/validation';
 import { BASE_URL } from '@/api/BaseAPI';
 import UserController from '@/controllers/UserController';
 import AuthController from '@/controllers/AuthController';
-import { ValidationRules, validateForm } from '@utils/validation';
 import template from './settings.hbs';
 
 export class SettingsPage extends Block<BlockProps> {
@@ -159,7 +159,7 @@ export class SettingsPage extends Block<BlockProps> {
 
   private loadUserData(): void {
     const state = this.store.getState();
-    const user = state.user;
+    const { user } = state;
 
     if (user) {
       (this.children.firstNameInput as Input).setValue(user.first_name || '');
@@ -257,10 +257,12 @@ export class SettingsPage extends Block<BlockProps> {
       console.error('Profile validation errors:', result.errors);
 
       Object.entries(result.errors).forEach(([field, error]) => {
-        const inputName = field === 'first_name' ? 'firstNameInput'
-            : field === 'second_name' ? 'secondNameInput'
-                : field === 'display_name' ? 'displayNameInput'
-                    : `${field}Input`;
+        let inputName = `${field}Input`;
+        if (field === 'first_name') {
+          inputName = 'firstNameInput';
+        } else if (field === 'second_name') {
+          inputName = 'secondNameInput';
+        }
         const input = this.children[inputName] as Input;
         if (input) {
           input.setProps({ error });

@@ -11,4 +11,3 @@ export class ErrorPage extends Block<ErrorPageProps> {
     return this.compile(template, this.props);
   }
 }
-

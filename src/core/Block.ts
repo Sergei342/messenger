@@ -16,9 +16,13 @@ export abstract class Block<P extends BlockProps = BlockProps> {
   } as const;
 
   private _element: HTMLElement | null = null;
+
   protected props: P;
+
   protected children: Record<string, Block>;
+
   private eventBus: EventBus;
+
   public id = nanoid(6);
 
   constructor(propsAndChildren: P = {} as P) {
@@ -60,7 +64,9 @@ export abstract class Block<P extends BlockProps = BlockProps> {
   }
 
   protected init(): void {}
+
   protected componentDidMount(): void {}
+
   public dispatchComponentDidMount(): void {
     this.eventBus.emit(Block.EVENTS.FLOW_CDM);
     Object.values(this.children).forEach((child) => child.dispatchComponentDidMount());

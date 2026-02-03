@@ -2,8 +2,8 @@ import { Block, BlockProps } from '@core/Block';
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
 import { ValidationRules, validateForm } from '@utils/validation';
-import AuthController from '@/controllers/AuthController';
 import { Router } from '@core/Router';
+import AuthController from '@/controllers/AuthController';
 import template from './login.hbs';
 
 export class LoginPage extends Block<BlockProps> {
@@ -69,9 +69,9 @@ export class LoginPage extends Block<BlockProps> {
   }
 
   private addValidationListeners(
-      element: HTMLInputElement,
-      input: Input,
-      fieldName: string,
+    element: HTMLInputElement,
+    input: Input,
+    fieldName: string,
   ): void {
     element.addEventListener('blur', () => {
       requestAnimationFrame(() => {
