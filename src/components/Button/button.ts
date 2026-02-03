@@ -4,17 +4,20 @@ import template from './button.hbs';
 interface ButtonProps {
   text: string;
   type?: 'button' | 'submit' | 'reset';
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'danger';
   onClick?: (e: MouseEvent) => void;
   [key: string]: unknown;
 }
 
 export class Button extends Block<ButtonProps> {
-  constructor(props: { text: string; type: string; variant: string }) {
+  constructor(props: ButtonProps) {
+    const type: 'button' | 'submit' | 'reset' = props.type || 'button';
+    const variant: 'primary' | 'secondary' | 'danger' = props.variant || 'primary';
+
     super({
       ...props,
-      type: props.type || 'button',
-      variant: props.variant || 'primary',
+      type,
+      variant,
     });
   }
 
