@@ -4,11 +4,11 @@
 
 
 ## Ссылка на деплой 
-[Open app on Netlify](https://hilarious-zabaione-c6eb8d.netlify.app)
+[Open app on Netlify]([https://hilarious-zabaione-c6eb8d.netlify.app](https://deploy-preview-3--hilarious-zabaione-c6eb8d.netlify.app/))
 
 
 
-_(После деплоя замените на ваш реальный URL из Netlify)_
+
 
 ## 📄 Страницы проекта
 
@@ -30,21 +30,18 @@ _(После деплоя замените на ваш реальный URL из
   - Поле ввода сообщения (`message`) с валидацией
   - Навигация в настройки профиля
 
-- **[Настройки профиля] — `/settings.html`
+- **[Настройки профиля] — `/settings`
   - Загрузка аватара (`avatar`)
   - Редактирование личной информации: `first_name`, `second_name`, `display_name`, `login`, `email`, `phone`
   - Изменение пароля: `oldPassword`, `newPassword`
   - Валидация всех форм
   - Ссылка обратно к чатам
 
-### Страницы ошибок
-
-- **[404 - Страница не найдена] — `/404.html`
-- **[500 - Ошибка сервера]* — `/500.html`
+`/500.html`
 
 ## 🛠 Технологии
 
-### Sprint 2
+### Sprint 3
 - **[Vite](https://vitejs.dev/)** — сборщик проекта с fast HMR
 - **[TypeScript](https://www.typescriptlang.org/)** — типизация и безопасность кода
 - **[Handlebars](https://handlebarsjs.com/)** — шаблонизатор для компонентов
@@ -66,4 +63,4 @@ _(После деплоя замените на ваш реальный URL из
 ### Предварительные требования
 - Node.js >= 18.0.0
 - npm >= 9.0.0
- [Open app on Netlify](https://hilarious-zabaione-c6eb8d.netlify.app)
+ 
