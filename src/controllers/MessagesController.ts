@@ -1,7 +1,6 @@
+import ChatsAPI from '@/api/ChatsAPI';
 import { WSTransport, WSTransportEvents, WSMessage } from '@core/WSTransport';
 import { Store, Message } from '@core/Store';
-// eslint-disable-next-line import/extensions
-import ChatsAPI from '@/api/ChatsAPI';
 
 class MessagesController {
   private sockets: Map<number, WSTransport> = new Map();
@@ -28,7 +27,7 @@ class MessagesController {
     try {
       const { token } = await ChatsAPI.getToken(chatId);
       const socket = new WSTransport(
-        `wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`,
+          `wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`,
       );
 
       this.sockets.set(chatId, socket);
@@ -36,6 +35,9 @@ class MessagesController {
       await socket.connect();
 
       this.subscribe(socket, chatId);
+
+      // Запрашиваем старые сообщения сразу после подключения
+      this.fetchOldMessages(chatId);
     } catch (error) {
       console.error('Failed to connect to chat:', error);
       throw error;
@@ -104,11 +106,11 @@ class MessagesController {
     });
   }
 
-  async fetchOldMessages(chatId: number, offset: number = 0): Promise<void> {
+  fetchOldMessages(chatId: number, offset: number = 0): void {
     const socket = this.sockets.get(chatId);
 
     if (!socket) {
-      throw new Error('Socket not connected for chat');
+      return;
     }
 
     socket.send({

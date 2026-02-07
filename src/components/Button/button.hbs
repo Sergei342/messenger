@@ -1,18 +1,1 @@
-<div class="form-group">
-    <label class="form-label" for="{{name}}">
-        {{label}}
-        {{#if required}}<span class="required">*</span>{{/if}}
-    </label>
-    <input
-            class="form-input {{#if error}}form-input--error{{/if}}"
-            type="{{type}}"
-            id="{{name}}"
-            name="{{name}}"
-            value="{{value}}"
-            placeholder="{{placeholder}}"
-            {{#if required}}required{{/if}}
-    />
-    {{#if error}}
-        <span class="form-error">{{error}}</span>
-    {{/if}}
-</div>
+<button class="btn btn-{{variant}}" type="{{type}}">{{text}}</button>
