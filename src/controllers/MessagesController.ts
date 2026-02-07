@@ -27,7 +27,7 @@ class MessagesController {
     try {
       const { token } = await ChatsAPI.getToken(chatId);
       const socket = new WSTransport(
-          `wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`,
+        `wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`,
       );
 
       this.sockets.set(chatId, socket);
