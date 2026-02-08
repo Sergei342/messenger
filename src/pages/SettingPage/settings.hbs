@@ -1,0 +1,43 @@
+<div class="page">
+    <main class="settings-page">
+        <div class="settings-container">
+            <h1 class="settings-title">Настройки профиля</h1>
+
+            <div class="settings-section">
+                <h2 class="section-title">Аватар</h2>
+                <div class="avatar-upload">
+                    <div class="avatar avatar-large"></div>
+                    <button class="btn btn-secondary" type="button">Загрузить фото</button>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2 class="section-title">Личная информация</h2>
+                <form class="form" id="profile-form">
+                    {{{firstNameInput}}}
+                    {{{secondNameInput}}}
+                    {{{displayNameInput}}}
+                    {{{loginInput}}}
+                    {{{emailInput}}}
+                    {{{phoneInput}}}
+                    {{{saveProfileButton}}}
+                </form>
+            </div>
+
+            <div class="settings-section">
+                <h2 class="section-title">Изменить пароль</h2>
+                <form class="form" id="password-form">
+                    {{{oldPasswordInput}}}
+                    {{{newPasswordInput}}}
+                    {{{savePasswordButton}}}
+                </form>
+            </div>
+
+            <div class="settings-section logout-section">
+                {{{logoutButton}}}
+            </div>
+
+            <a href="/messenger" class="link" data-link>Вернуться к чатам</a>
+        </div>
+    </main>
+</div>
