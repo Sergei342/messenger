@@ -50,6 +50,9 @@ body {
 .form {
   width: 100%;
 }
+.btn-primary {
+  padding-top: 16px;
+}
 
 
 
@@ -290,6 +293,7 @@ body {
   cursor: pointer;
   border-bottom: 1px solid $border-color;
   transition: background 0.2s;
+  margin-bottom: 10px;
 
   &:hover {
     background: $bg-color;
@@ -464,4 +468,108 @@ body {
     }
   }
 }
+
+// Отступы между элементами формы
+.form-group {
+  margin-bottom: 20px;
+}
+
+// Отступы для кнопок в формах
+.form .btn {
+  margin-top: 10px;
+  width: 100%;
+}
+
+// Отступы в настройках профиля
+.settings-section .form-group {
+  margin-bottom: 15px;
+}
+
+.settings-section .btn {
+  margin-top: 20px;
+}
+
+// Секция выхода
+.logout-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid $border-color;
+}
+
+// Кнопка danger (красная)
+.btn-danger {
+  background: $error-color;
+  color: $white;
+
+  &:hover {
+    background: color.scale($error-color, $lightness: -10%);
+  }
+}
+
+// Действия в чате (добавить/удалить пользователя, удалить чат)
+.chat-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.add-user-section,
+.remove-user-section,
+.delete-chat-section {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+
+  .form-group {
+    margin-bottom: 0;
+  }
+
+  .form-input {
+    width: 150px;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  .form-label {
+    display: none;
+  }
+
+  .btn {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+
+// Секция создания чата
+.create-chat-section {
+  padding: 15px 20px;
+  border-bottom: 1px solid $border-color;
+
+  .input-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  .form-group {
+    flex: 1;
+    margin-bottom: 0;
+  }
+
+  .form-label {
+    display: none;
+  }
+
+  .form-input {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .btn {
+    white-space: nowrap;
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+}
+
 
