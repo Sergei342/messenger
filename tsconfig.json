@@ -34,9 +34,17 @@
       "@api/*": ["src/api/*"],
       "@controllers/*": ["src/controllers/*"]
     },
-    "types": ["vite/client", "node"],
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "types": ["vite/client", "node","mocha"],
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+
   },
-  "include": ["src/**/*", "src/**/*.d.ts", "vite.config.ts"],
+  "include": [
+    "src/**/*",
+    "src/**/*.d.ts",
+    "vite.config.ts",
+    "node_modules/@types/mocha/index.d.ts",
+    "node_modules/@types/mocha/index.d.ts",
+    "mocha.setup"
+  ],
   "exclude": ["node_modules", "dist"]
 }
