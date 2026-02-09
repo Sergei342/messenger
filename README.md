@@ -6,6 +6,26 @@
 ## Ссылка на деплой 
 https://deploy-preview-3--hilarious-zabaione-c6eb8d.netlify.app
 
+## 🧪 Тестирование
+
+Проект использует Mocha + Chai для тестирования.
+
+### Запуск тестов
+```bash
+npm test
+```
+
+### Покрытие тестами
+
+- `src/core/Router.ts` — тесты роутера
+- `src/core/Block.ts` — тесты базового компонента
+- `src/core/HTTPTransport.ts` — тесты HTTP клиента
+
+### Sprint 4 (завершён) ✅
+- ✅ Unit-тесты (Mocha + Chai)
+- ✅ Pre-commit хуки (Husky + lint-staged)
+- ✅ Аудит и обновление пакетов
+
 
 
 
