@@ -1,0 +1,59 @@
+<div class="page">
+    <main class="messenger-page">
+        <aside class="chat-list">
+            <div class="chat-list-header">
+                <h2>Чаты</h2>
+                <a href="/settings" class="settings-link" data-link>⚙️</a>
+            </div>
+
+            <div class="create-chat-section">
+                <div class="input-row">
+                    {{{createChatInput}}}
+                    {{{createChatButton}}}
+                </div>
+
+            </div>
+
+            <div class="chats">
+                <!-- Чаты загружаются динамически -->
+            </div>
+            <div class="chat-actions">
+                <div class="add-user-section">
+                    {{{addUserInput}}}
+                    {{{addUserButton}}}
+                </div>
+                <div class="remove-user-section">
+                    {{{removeUserInput}}}
+                    {{{removeUserButton}}}
+                </div>
+                <div class="delete-chat-section">
+                    {{{deleteChatButton}}}
+                </div>
+            </div>
+        </aside>
+
+        <section class="chat-window">
+            <header class="chat-header">
+                <div class="chat-header-info">
+                    <h2>Выберите чат</h2>
+                </div>
+
+            </header>
+
+            <div class="messages">
+                <div class="no-messages">Выберите чат для начала общения</div>
+            </div>
+
+            <footer class="message-form-container">
+                <form class="message-form">
+                    <div class="message-input-wrapper">
+                        {{{messageInput}}}
+                    </div>
+                    <div class="message-button-wrapper">
+                        {{{sendButton}}}
+                    </div>
+                </form>
+            </footer>
+        </section>
+    </main>
+</div>
