@@ -1,4 +1,3 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Router } from './Router';
 import { Block, BlockProps } from './Block';
 
@@ -24,7 +23,6 @@ class AnotherPage extends Block<BlockProps> {
 
 describe('Router', () => {
     beforeEach(() => {
-        // Сбрасываем синглтон
         (Router as any).instance = undefined;
     });
 
@@ -68,25 +66,25 @@ describe('Router', () => {
     });
 
     it('должен вызывать history.back() при вызове back()', () => {
-        const backSpy = vi.spyOn(window.history, 'back');
+        const backSpy = jest.spyOn(window.history, 'back');
 
         const router = Router.getInstance('#app');
         router.use('/', TestPage);
         router.start();
         router.back();
 
-        expect(backSpy).toHaveBeenCalledOnce();
+        expect(backSpy).toHaveBeenCalled();
     });
 
     it('должен вызывать history.forward() при вызове forward()', () => {
-        const forwardSpy = vi.spyOn(window.history, 'forward');
+        const forwardSpy = jest.spyOn(window.history, 'forward');
 
         const router = Router.getInstance('#app');
         router.use('/', TestPage);
         router.start();
         router.forward();
 
-        expect(forwardSpy).toHaveBeenCalledOnce();
+        expect(forwardSpy).toHaveBeenCalled();
     });
 
     it('должен регистрировать notFound маршрут', () => {

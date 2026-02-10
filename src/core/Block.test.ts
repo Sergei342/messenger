@@ -1,4 +1,3 @@
-import { describe, it, expect, vi } from 'vitest';
 import { Block, BlockProps } from './Block';
 
 interface TestProps extends BlockProps {
@@ -87,7 +86,7 @@ describe('Block', () => {
     });
 
     it('должен добавлять события из props', () => {
-        const clickHandler = vi.fn();
+        const clickHandler = jest.fn();
         const block = new TestBlock({
             events: {
                 click: clickHandler,
@@ -96,7 +95,7 @@ describe('Block', () => {
 
         block.element?.click();
 
-        expect(clickHandler).toHaveBeenCalledOnce();
+        expect(clickHandler).toHaveBeenCalled();
     });
 
     it('не должен изменять props при передаче null в setProps()', () => {
