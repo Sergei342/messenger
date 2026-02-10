@@ -8,7 +8,7 @@ https://deploy-preview-3--hilarious-zabaione-c6eb8d.netlify.app
 
 ## 🧪 Тестирование
 
-Проект использует vitest для тестирования.
+Проект использует jest для тестирования.
 
 ### Запуск тестов
 ```bash
