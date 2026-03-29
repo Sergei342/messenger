@@ -1,0 +1,19 @@
+<div class="form-group">
+    <label class="form-label" for="{{name}}">
+        {{label}}
+        {{#if required}}<span class="required">*</span>{{/if}}
+    </label>
+    <input
+            class="form-input"
+            type="{{type}}"
+            id="{{name}}"
+            name="{{name}}"
+            placeholder="{{placeholder}}"
+            {{#if value}}value="{{value}}"{{/if}}
+        {{#if required}}required{{/if}}
+    >
+    {{#if error}}
+        <span class="form-error">{{error}}</span>
+    {{/if}}
+</div>
+

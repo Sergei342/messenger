@@ -1,0 +1,35 @@
+{
+  "name": "messenger",
+  "version": "1.0.0",
+  "description": "Chat application built with Vite and Handlebars",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 3000",
+    "start": "npm run build && npm run preview",
+    "build": "vite build",
+    "preview": "vite preview --port 3000",
+    "lint": "eslint . --ext .ts,.js",
+    "lint:fix": "eslint . --ext .ts,.js --fix",
+    "stylelint": "stylelint \"src/**/*.scss\"",
+    "stylelint:fix": "stylelint \"src/**/*.scss\" --fix"
+  },
+  "dependencies": {
+    "handlebars": "^4.7.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "sass": "^1.69.5",
+    "stylelint": "^16.1.0",
+    "stylelint-config-standard-scss": "^12.0.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.8",
+    "vite-plugin-handlebars": "^2.0.0"
+  },
+  "engines": {
+    "node": "22.11.0"
+  }
+}
+

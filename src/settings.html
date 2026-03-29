@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройки - Чат-приложение</title>
+    <link rel="stylesheet" href="./styles/main.scss">
+</head>
+<body>
+<div class="page">
+    <main class="settings-page">
+        <div class="settings-container">
+            <h1 class="settings-title">Настройки профиля</h1>
+
+            <div class="settings-section">
+                <h2 class="section-title">Аватар</h2>
+                <div class="avatar-upload">
+                    <div class="avatar avatar-large"></div>
+                    <button class="btn btn-secondary" type="button">Загрузить фото</button>
+                    <input type="file" name="avatar" id="avatar" accept="image/*" hidden>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2 class="section-title">Личная информация</h2>
+                <form class="form" id="profile-form">
+                    <div class="form-group">
+                        <label class="form-label" for="first_name">Имя</label>
+                        <input
+                                class="form-input"
+                                type="text"
+                                id="first_name"
+                                name="first_name"
+                                value="Иван"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="second_name">Фамилия</label>
+                        <input
+                                class="form-input"
+                                type="text"
+                                id="second_name"
+                                name="second_name"
+                                value="Иванов"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="display_name">Отображаемое имя</label>
+                        <input
+                                class="form-input"
+                                type="text"
+                                id="display_name"
+                                name="display_name"
+                                value="Ваня"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="login">Логин</label>
+                        <input
+                                class="form-input"
+                                type="text"
+                                id="login"
+                                name="login"
+                                value="ivan_ivanov"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <input
+                                class="form-input"
+                                type="email"
+                                id="email"
+                                name="email"
+                                value="ivan@example.com"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="phone">Телефон</label>
+                        <input
+                                class="form-input"
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                value="+7 (999) 123-45-67"
+                        >
+                    </div>
+
+                    <button class="btn btn-primary" type="submit">Сохранить изменения</button>
+                </form>
+            </div>
+
+            <div class="settings-section">
+                <h2 class="section-title">Изменить пароль</h2>
+                <form class="form" id="password-form">
+                    <div class="form-group">
+                        <label class="form-label" for="oldPassword">Старый пароль</label>
+                        <input
+                                class="form-input"
+                                type="password"
+                                id="oldPassword"
+                                name="oldPassword"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="newPassword">Новый пароль</label>
+                        <input
+                                class="form-input"
+                                type="password"
+                                id="newPassword"
+                                name="newPassword"
+                        >
+                    </div>
+
+                    <button class="btn btn-primary" type="submit">Изменить пароль</button>
+                </form>
+            </div>
+
+            <a href="/messenger.html" class="link">Вернуться к чатам</a>
+        </div>
+    </main>
+</div>
+
+<script type="module" src="./main.js"></script>
+</body>
+</html>
+
